@@ -1,0 +1,67 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+file_path = r'C:\Users\chenn\Downloads\titanic.csv.csv'
+# Load the Titanic dataset
+df = pd.read_csv(file_path)
+
+# Data Cleaning
+df = df.drop(columns=['Cabin'])
+df['Age'].fillna(df['Age'].median(), inplace=True)
+df['Embarked'].fillna(df['Embarked'].mode()[0], inplace=True)
+df.dropna(inplace=True)
+df['Sex'] = df['Sex'].map({'male': 0, 'female': 1})
+df['Embarked'] = df['Embarked'].map({'C': 0, 'Q': 1, 'S': 2})
+
+# Summary statistics
+print(df.describe())
+
+# Visualize distributions
+plt.figure(figsize=(10, 5))
+plt.hist(df['Age'], bins=30, edgecolor='black')
+plt.xlabel('Age')
+plt.ylabel('Frequency')
+plt.title('Age Distribution')
+plt.show()
+
+plt.figure(figsize=(10, 5))
+sns.countplot(x='Sex', data=df)
+plt.xlabel('Sex')
+plt.ylabel('Count')
+plt.title('Sex Distribution')
+plt.show()
+
+plt.figure(figsize=(10, 5))
+sns.countplot(x='Survived', data=df)
+plt.xlabel('Survived')
+plt.ylabel('Count')
+plt.title('Survival Distribution')
+plt.show()
+
+# Explore relationships between variables
+plt.figure(figsize=(10, 5))
+sns.barplot(x='Sex', y='Survived', data=df)
+plt.xlabel('Sex')
+plt.ylabel('Survival Rate')
+plt.title('Survival Rate by Sex')
+plt.show()
+
+plt.figure(figsize=(10, 5))
+sns.histplot(data=df, x='Age', hue='Survived', multiple='stack', bins=30)
+plt.xlabel('Age')
+plt.ylabel('Count')
+plt.title('Survival Rate by Age')
+plt.show()
+
+plt.figure(figsize=(10, 5))
+sns.barplot(x='Pclass', y='Survived', data=df)
+plt.xlabel('Pclass')
+plt.ylabel('Survival Rate')
+plt.title('Survival Rate by Class')
+plt.show()
+
+# Correlation heatmap
+plt.figure(figsize=(10, 8))
+sns.heatmap(df.corr(), annot=True, cmap='coolwarm', fmt='.2f')
+plt.title('Correlation Heatmap')
+plt.show()
